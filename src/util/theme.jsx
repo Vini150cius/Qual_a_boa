@@ -1,8 +1,8 @@
 export const lightTheme = {
   background: '#f0f0f0ff',
   text: '#000000',
-  primary: '#d11414ff',
-  secondary: '#e00404ff',
+  primary: '#F3DFC1',
+  secondary: '#253D5B',
   card: '#eeeeeeff',
   border: '#ccccccff',
   placeHolder: '#888888ff',
@@ -11,8 +11,8 @@ export const lightTheme = {
 export const darkTheme = {
   background: '#171616',
   text: '#f0f0f0ff',
-  primary: '#aa2121ff',
-  secondary: '#ad0505ff',
+  primary: '#DDBEA8',
+  secondary: '#0D2C54',
   card: '#222222ff',
   border: '#333333ff',
   placeHolder: '#777777ff',
