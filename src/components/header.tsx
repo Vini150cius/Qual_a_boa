@@ -11,6 +11,7 @@ import { ChevronLeft, Search, X } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 import type { NavigationProp, ParamListBase } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTheme } from "../util/ThemeProvider";
 
 export function Header({
   screen,
@@ -20,6 +21,7 @@ export function Header({
   onSearchSubmit,
   searchPlaceholder = "Buscar...",
 }: HeaderProps) {
+  const { theme } = useTheme();
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const insets = useSafeAreaInsets();
   const [isSearching, setIsSearching] = useState(false);
@@ -47,31 +49,47 @@ export function Header({
     onSearchChangeText?.("");
   }
 
+  const iconCircleStyle = {
+    backgroundColor: theme.background,
+    borderColor: theme.border,
+  };
+
   if (isSearching) {
     return (
       <View
         style={[
           style.container,
-          { paddingTop: insets.top, height: 76 + insets.top },
+          {
+            paddingTop: insets.top,
+            height: 76 + insets.top,
+            backgroundColor: theme.card,
+          },
         ]}
       >
         <View style={style.searchExpandedContainer}>
           <TextInput
-            style={style.searchInput}
+            style={[
+              style.searchInput,
+              {
+                backgroundColor: theme.background,
+                color: theme.text,
+                borderColor: theme.border,
+              },
+            ]}
             value={searchValue}
             onChangeText={handleSearchChange}
             placeholder={searchPlaceholder}
-            placeholderTextColor="#8a8a8a"
+            placeholderTextColor={theme.placeHolder}
             autoFocus
             returnKeyType="search"
             onSubmitEditing={() => onSearchSubmit?.(searchValue)}
           />
           <TouchableOpacity
             onPress={closeSearch}
-            style={style.iconCircle}
+            style={[style.iconCircle, iconCircleStyle]}
             activeOpacity={0.7}
           >
-            <X size={20} color="#333" />
+            <X size={20} color={theme.text} />
           </TouchableOpacity>
         </View>
       </View>
@@ -82,7 +100,12 @@ export function Header({
     <View
       style={[
         style.container,
-        { paddingTop: insets.top, height: 76 + insets.top },
+        {
+          paddingTop: insets.top,
+          height: 76 + insets.top,
+          backgroundColor: theme.card,
+          borderBottomColor: theme.border,
+        },
       ]}
     >
       <View style={style.row}>
@@ -90,25 +113,31 @@ export function Header({
           {screen !== "home" && (
             <TouchableOpacity
               onPress={handleBackPress}
-              style={style.iconCircle}
+              style={[style.iconCircle, iconCircleStyle]}
               activeOpacity={0.7}
             >
-              <ChevronLeft size={22} color="#333" />
+              <ChevronLeft size={22} color={theme.text} />
             </TouchableOpacity>
           )}
         </View>
 
-        <Text style={[style.title, screen !== "home" && style.titleCentered]}>
+        <Text
+          style={[
+            style.title,
+            { color: theme.text },
+            screen !== "home" && style.titleCentered,
+          ]}
+        >
           {screen === "home" ? "Qual a boa?" : title}
         </Text>
 
         <View style={style.rightSlot}>
           <TouchableOpacity
             onPress={() => setIsSearching(true)}
-            style={style.iconCircle}
+            style={[style.iconCircle, iconCircleStyle]}
             activeOpacity={0.7}
           >
-            <Search size={20} color="#333" />
+            <Search size={20} color={theme.text} />
           </TouchableOpacity>
         </View>
       </View>
@@ -120,10 +149,8 @@ const style = StyleSheet.create({
   container: {
     width: "100%",
     height: 76,
-    backgroundColor: "#f1f1f1",
     justifyContent: "center",
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
     paddingHorizontal: 16,
     paddingVertical: 0,
   },
@@ -141,7 +168,6 @@ const style = StyleSheet.create({
     flex: 1,
     fontSize: 20,
     fontWeight: "bold",
-    color: "#1d1d1d",
   },
   titleCentered: {
     textAlign: "center",
@@ -154,15 +180,15 @@ const style = StyleSheet.create({
   iconCircle: {
     width: 36,
     height: 36,
-    borderRadius: 20,
+    borderRadius: 999,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#eceff1",
+    borderWidth: 1,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.15,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowOpacity: 0.08,
+    shadowRadius: 1.5,
+    elevation: 1,
   },
   searchExpandedContainer: {
     flexDirection: "row",
@@ -172,11 +198,8 @@ const style = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: 42,
-    backgroundColor: "#f8f9fa",
-    borderRadius: 12,
+    borderRadius: 16,
     paddingHorizontal: 14,
-    color: "#1d1d1d",
     borderWidth: 1,
-    borderColor: "#d8dee4",
   },
 });

@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import Home from "./screens/Home";
 import NewDish from "./screens/NewDish";
+import { useTheme } from "./util/ThemeProvider";
 
 export type RootTabParamList = {
   Home: undefined;
@@ -15,6 +16,8 @@ export type RootTabParamList = {
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
 export default function TabsNavigation() {
+  const { theme } = useTheme();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -22,9 +25,11 @@ export default function TabsNavigation() {
           height: 70,
           paddingTop: 10,
           paddingBottom: 10,
+          backgroundColor: theme.card,
+          borderTopColor: theme.border,
         },
-        tabBarActiveTintColor: "tomato",
-        tabBarInactiveTintColor: "gray",
+        tabBarActiveTintColor: theme.secondary,
+        tabBarInactiveTintColor: theme.placeHolder,
         tabBarIcon: ({ color, size }) => {
           let iconName: keyof typeof Ionicons.glyphMap;
 
