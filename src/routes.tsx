@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Home from "./screens/Home";
 import NewDish from "./screens/NewDish";
 import { useTheme } from "./util/ThemeProvider";
+import DishList from "./screens/DishList";
 
 export type RootTabParamList = {
   Home: undefined;
@@ -53,6 +54,11 @@ export default function TabsNavigation() {
       <Tab.Screen
         name="NewDish"
         component={NewDish}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Lista de Pratos"
+        component={DishList}
         options={{ headerShown: false }}
       />
     </Tab.Navigator>

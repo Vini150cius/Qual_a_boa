@@ -2,6 +2,7 @@ export type Screen =
   | "home"
   | "categories"
   | "addDish"
+  | "dishList"
   | "favorites"
   | "settings";
 
