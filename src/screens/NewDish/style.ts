@@ -4,6 +4,9 @@ export const styles = StyleSheet.create({
   screen: {
     flex: 1,
   },
+  scroll: {
+    flex: 1,
+  },
   contentContainer: {
     paddingHorizontal: 16,
     paddingTop: 20,
@@ -12,6 +15,10 @@ export const styles = StyleSheet.create({
   },
   fieldGroup: {
     gap: 8,
+  },
+  ratingGroup: {
+    alignItems: "center",
+    marginTop: 12,
   },
   label: {
     fontSize: 16,
@@ -47,5 +54,27 @@ export const styles = StyleSheet.create({
     paddingVertical: 14,
     fontSize: 18,
     fontWeight: "400",
+  },
+  textRanking: {
+    marginTop: 8,
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#00000050",
+  },
+  button: {
+    borderRadius: 999,
+    backgroundColor: "#FF6347",
+    padding: 14,
+  },
+  textButton: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  buttonContainer: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 20,
   },
 });

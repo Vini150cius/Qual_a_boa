@@ -1,16 +1,18 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   type LayoutChangeEvent,
   KeyboardAvoidingView,
   ScrollView,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { Header } from "../../components/header";
 import { useTheme } from "../../util/ThemeProvider";
 import { styles } from "./style";
 import { Link2 } from "lucide-react-native";
+import StarRating from "react-native-star-rating-widget";
 
 export default function NewDish() {
   const { theme } = useTheme();
@@ -24,6 +26,8 @@ export default function NewDish() {
   const [dishName, setDishName] = useState("");
   const [youtubeLink, setYoutubeLink] = useState("");
   const [recipeNotes, setRecipeNotes] = useState("");
+  const [rating, setRating] = useState(0);
+  const [textRanking, setTextRanking] = useState("");
 
   function setFieldPosition(
     field: "dishName" | "youtubeLink" | "recipeNotes",
@@ -37,6 +41,33 @@ export default function NewDish() {
     scrollViewRef.current?.scrollTo({ y: target, animated: true });
   }
 
+  function updateTextRanking() {
+    switch (rating) {
+      case 0:
+        setTextRanking("Sem avaliação");
+        break;
+      case 1:
+        setTextRanking("Melhor do que passar fome");
+        break;
+      case 2:
+        setTextRanking("Dá pra engolir");
+        break;
+      case 3:
+        setTextRanking("É...");
+        break;
+      case 4:
+        setTextRanking("Bom");
+        break;
+      case 5:
+        setTextRanking("8 Maravilha do Mundo");
+        break;
+    }
+  }
+
+  useEffect(() => {
+    updateTextRanking();
+  }, [rating]);
+
   return (
     <>
       <Header screen="addDish" title="Adicionar Prato" />
@@ -46,6 +77,7 @@ export default function NewDish() {
       >
         <ScrollView
           ref={scrollViewRef}
+          style={styles.scroll}
           contentContainerStyle={styles.contentContainer}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
@@ -116,7 +148,7 @@ export default function NewDish() {
             onLayout={(event) => setFieldPosition("recipeNotes", event)}
           >
             <Text style={[styles.label, { color: theme.text }]}>
-              Anotacoes da receita
+              Anotações da receita
             </Text>
             <TextInput
               style={[
@@ -136,7 +168,25 @@ export default function NewDish() {
               onFocus={() => scrollToField("recipeNotes")}
             />
           </View>
+
+          <View style={[styles.fieldGroup, styles.ratingGroup]}>
+            <Text
+              style={[
+                styles.label,
+                { color: theme.text, textAlign: "center", fontSize: 20 },
+              ]}
+            >
+              Minha nota
+            </Text>
+            <StarRating rating={rating} onChange={setRating} step="full" />
+            <Text style={styles.textRanking}> {textRanking} </Text>
+          </View>
         </ScrollView>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.textButton}>Salvar Prato</Text>
+          </TouchableOpacity>
+        </View>
       </KeyboardAvoidingView>
     </>
   );
