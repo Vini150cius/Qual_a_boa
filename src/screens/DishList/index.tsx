@@ -2,6 +2,8 @@ import { FlatList, Image, Text, View } from "react-native";
 import { Header } from "../../components/header";
 import { useTheme } from "../../util/ThemeProvider";
 import type { DishItemProps } from "../../types/dish.types";
+import { styles } from "./style";
+import { Star } from "lucide-react-native";
 
 export default function DishList(categoryId?: string, categoryName?: string) {
   const { theme } = useTheme();
@@ -38,13 +40,13 @@ export default function DishList(categoryId?: string, categoryName?: string) {
   ];
 
   const DishItem = ({ data }: { data: DishItemProps }) => (
-    <View>
-      <Image
-        source={{ uri: data.imageURL }}
-        style={{ width: 100, height: 100 }}
-      />
-      <Text>{data.title}</Text>
-      <Text>Rank: {data.rank}</Text>
+    <View style={styles.containerDishItem}>
+      <Image source={{ uri: data.imageURL }} style={styles.dishImage} />
+      <Text style={styles.dishTitle}>{data.title}</Text>
+      <View style={styles.dishRankContainer}>
+        <Text style={styles.dishRankText}>{data.rank}.0 <Star size={15} fill={styles.dishRankText.color} color={styles.dishRankText.color} /> </Text>
+        
+      </View>
     </View>
   );
 
