@@ -14,3 +14,8 @@ export interface HeaderProps {
   onSearchSubmit?: (text: string) => void;
   searchPlaceholder?: string;
 }
+
+export interface AddButtonProps {
+  type: "category" | "dish";
+  onCreateCategory?: (categoryName: string) => void;
+}
