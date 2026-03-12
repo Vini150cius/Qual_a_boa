@@ -35,13 +35,10 @@ export function AddButton({ type, onCreateCategory }: AddButtonProps) {
     navigation.navigate("NewDish");
   }
 
-  function handleSaveCategory() {
-    const formattedName = categoryName.trim();
-    if (!formattedName) {
-      return;
-    }
+  async function handleSaveCategory() {
+    const formattedName = categoryName;
 
-    onCreateCategory?.(formattedName);
+    await onCreateCategory?.(formattedName);
     closeModal();
   }
 

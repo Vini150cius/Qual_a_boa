@@ -8,5 +8,6 @@ export type Category = {
   id: string;
   title: string;
   quantity: number;
-  imageUrl: string;
+  imageUrl?: string;
+  created_at?: string;
 };
