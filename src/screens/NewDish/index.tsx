@@ -13,8 +13,12 @@ import { useTheme } from "../../util/ThemeProvider";
 import { styles } from "./style";
 import { Link2 } from "lucide-react-native";
 import StarRating from "react-native-star-rating-widget";
+import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import type { RootTabParamList } from "../../routes";
+import { createDish } from "../../service/DishService";
+type Props = BottomTabScreenProps<RootTabParamList, "Lista de Pratos">;
 
-export default function NewDish() {
+export default function NewDish({ route }: Props) {
   const { theme } = useTheme();
   const scrollViewRef = useRef<ScrollView>(null);
   const fieldPositions = useRef({
@@ -22,6 +26,7 @@ export default function NewDish() {
     youtubeLink: 0,
     recipeNotes: 0,
   });
+  const { categoryId } = route.params;
 
   const [dishName, setDishName] = useState("");
   const [youtubeLink, setYoutubeLink] = useState("");
@@ -62,6 +67,17 @@ export default function NewDish() {
         setTextRanking("8 Maravilha do Mundo");
         break;
     }
+  }
+
+  async function setDish() {
+    await createDish({
+      id: String(Date.now()),
+      category_id: Number(categoryId),
+      title: dishName,
+      rank: rating,
+      recipe: recipeNotes,
+      recipeUrl: youtubeLink,
+    });
   }
 
   useEffect(() => {
@@ -183,7 +199,7 @@ export default function NewDish() {
           </View>
         </ScrollView>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={setDish}>
             <Text style={styles.textButton}>Salvar Prato</Text>
           </TouchableOpacity>
         </View>

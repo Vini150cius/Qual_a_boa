@@ -4,9 +4,17 @@ import { useTheme } from "../../util/ThemeProvider";
 import type { DishItemProps } from "../../types/dish.types";
 import { styles } from "./style";
 import { Star } from "lucide-react-native";
+import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import type { RootTabParamList } from "../../routes";
+import { AddButton } from "../../components/addButton";
 
-export default function DishList(categoryId?: string, categoryName?: string) {
+type Props = BottomTabScreenProps<RootTabParamList, "Lista de Pratos">;
+
+export default function DishList({ route }: Props) {
   const { theme } = useTheme();
+  const { categoryTitle, categoryId } = route.params;
+
+
 
   const feed = [
     {
@@ -44,8 +52,14 @@ export default function DishList(categoryId?: string, categoryName?: string) {
       <Image source={{ uri: data.imageURL }} style={styles.dishImage} />
       <Text style={styles.dishTitle}>{data.title}</Text>
       <View style={styles.dishRankContainer}>
-        <Text style={styles.dishRankText}>{data.rank}.0 <Star size={15} fill={styles.dishRankText.color} color={styles.dishRankText.color} /> </Text>
-        
+        <Text style={styles.dishRankText}>
+          {data.rank}.0{" "}
+          <Star
+            size={15}
+            fill={styles.dishRankText.color}
+            color={styles.dishRankText.color}
+          />{" "}
+        </Text>
       </View>
     </View>
   );
@@ -56,7 +70,7 @@ export default function DishList(categoryId?: string, categoryName?: string) {
 
   return (
     <>
-      <Header screen="dishList" title={categoryName || "Lista de Pratos"} />
+      <Header screen="dishList" title={categoryTitle || "Lista de Pratos"} />
       <View style={{ flex: 1, backgroundColor: theme.background }}>
         <Text style={{ color: theme.text }}> Screen</Text>
         <FlatList
@@ -64,6 +78,7 @@ export default function DishList(categoryId?: string, categoryName?: string) {
           keyExtractor={(item: DishItemProps) => String(item.id)}
           renderItem={renderItem}
         />
+        <AddButton type="dish" categoryId={categoryId} />
       </View>
     </>
   );

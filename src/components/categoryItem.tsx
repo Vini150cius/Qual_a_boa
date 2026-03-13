@@ -1,9 +1,28 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import type { CategoryItemProps } from "../types/category.types";
+import { useNavigation } from "@react-navigation/native";
+import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import type { RootTabParamList } from "../routes";
 
-export function CategoryItem({ title, quantity, imageUrl }: CategoryItemProps) {
+export function CategoryItem({
+  title,
+  quantity,
+  imageUrl,
+  id,
+}: CategoryItemProps) {
+  const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
+
   return (
-    <View style={styles.item}>
+    <TouchableOpacity
+      style={styles.item}
+      key={id}
+      onPress={() => {
+        navigation.navigate("Lista de Pratos", {
+          categoryId: id,
+          categoryTitle: title,
+        });
+      }}
+    >
       <Image
         source={{
           uri: imageUrl,
@@ -13,7 +32,7 @@ export function CategoryItem({ title, quantity, imageUrl }: CategoryItemProps) {
       />
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.quantity}>{quantity} receitas</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 

@@ -9,9 +9,8 @@ import DishList from "./screens/DishList";
 
 export type RootTabParamList = {
   Home: undefined;
-  Mídias: undefined;
-  NewDish: undefined;
-  Configurações: undefined;
+  "Novo Prato": { categoryId: string };
+  "Lista de Pratos": { categoryId: string; categoryTitle: string };
 };
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -36,10 +35,10 @@ export default function TabsNavigation() {
 
           if (route.name === "Home") {
             iconName = "home-outline";
-          } else if (route.name === "Mídias") {
-            iconName = "image-outline";
+          } else if (route.name === "Novo Prato") {
+            iconName = "add-circle-outline";
           } else {
-            iconName = "settings-outline";
+            iconName = "list-outline";
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -52,14 +51,22 @@ export default function TabsNavigation() {
         options={{ headerShown: false }}
       />
       <Tab.Screen
-        name="NewDish"
+        name="Novo Prato"
         component={NewDish}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+          tabBarButton: () => null,
+          tabBarItemStyle: { display: "none" },
+        }}
       />
       <Tab.Screen
         name="Lista de Pratos"
         component={DishList}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+          tabBarButton: () => null,
+          tabBarItemStyle: { display: "none" },
+        }}
       />
     </Tab.Navigator>
   );

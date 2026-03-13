@@ -18,4 +18,5 @@ export interface HeaderProps {
 export interface AddButtonProps {
   type: "category" | "dish";
   onCreateCategory?: (categoryName: string) => Promise<void> | void;
+  categoryId?: string;
 }

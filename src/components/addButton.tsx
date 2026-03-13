@@ -15,7 +15,7 @@ import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import type { RootTabParamList } from "../routes";
 import { useState } from "react";
 
-export function AddButton({ type, onCreateCategory }: AddButtonProps) {
+export function AddButton({ type, onCreateCategory, categoryId }: AddButtonProps) {
   const { theme } = useTheme();
   const navigation = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -31,8 +31,9 @@ export function AddButton({ type, onCreateCategory }: AddButtonProps) {
       setIsModalVisible(true);
       return;
     }
-
-    navigation.navigate("NewDish");
+    if (type === "dish" && categoryId) {
+      navigation.navigate("Novo Prato", { categoryId });
+    }
   }
 
   async function handleSaveCategory() {

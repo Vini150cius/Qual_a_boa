@@ -2,6 +2,7 @@ export type CategoryItemProps = {
   title: string;
   quantity: number;
   imageUrl: string;
+  id: string;
 };
 
 export type Category = {

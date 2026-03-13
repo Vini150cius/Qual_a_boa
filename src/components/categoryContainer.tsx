@@ -21,7 +21,8 @@ export function CategoryContainer({ categories }: CategoryContainerProps) {
             <CategoryItem
               title={item.title}
               quantity={item.quantity}
-              imageUrl={item.imageUrl}
+              imageUrl={item.imageUrl || "https://via.placeholder.com/150"}
+              id={item.id}
             />
           </View>
         )}

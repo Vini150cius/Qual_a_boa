@@ -12,8 +12,9 @@ export async function getDatabase() {
 }
 
 const createDatabaseSchema = async (db: SQLite.SQLiteDatabase) => {
+  // DROP TABLE IF EXISTS categories;
   await db.execAsync(`
-    DROP TABLE IF EXISTS categories;
+    DROP TABLE IF EXISTS dishes;
 
     CREATE TABLE IF NOT EXISTS categories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -21,6 +22,17 @@ const createDatabaseSchema = async (db: SQLite.SQLiteDatabase) => {
       imageUrl TEXT NOT NULL,
       quantity INTEGER DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS dishes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      category_id INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      rank INTEGER DEFAULT 0,
+      recipe TEXT,
+      recipeUrl TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
     );
   `);
 };
