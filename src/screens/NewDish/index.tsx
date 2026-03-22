@@ -16,9 +16,13 @@ import StarRating from "react-native-star-rating-widget";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import type { RootTabParamList } from "../../routes";
 import { createDish } from "../../service/DishService";
-type Props = BottomTabScreenProps<RootTabParamList, "Lista de Pratos">;
+import { useNavigation } from "@react-navigation/native";
+import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+
+type Props = BottomTabScreenProps<RootTabParamList, "Novo Prato">;
 
 export default function NewDish({ route }: Props) {
+  const navigate = useNavigation<BottomTabNavigationProp<RootTabParamList>>();
   const { theme } = useTheme();
   const scrollViewRef = useRef<ScrollView>(null);
   const fieldPositions = useRef({
@@ -26,7 +30,7 @@ export default function NewDish({ route }: Props) {
     youtubeLink: 0,
     recipeNotes: 0,
   });
-  const { categoryId } = route.params;
+  const { categoryId, categoryTitle } = route.params;
 
   const [dishName, setDishName] = useState("");
   const [youtubeLink, setYoutubeLink] = useState("");
@@ -77,6 +81,17 @@ export default function NewDish({ route }: Props) {
       rank: rating,
       recipe: recipeNotes,
       recipeUrl: youtubeLink,
+    });
+
+    setDishName("");
+    setYoutubeLink("");
+    setRecipeNotes("");
+    setRating(0);
+
+    navigate.navigate("Lista de Pratos", {
+      categoryId,
+      categoryTitle,
+      refreshKey: Date.now(),
     });
   }
 

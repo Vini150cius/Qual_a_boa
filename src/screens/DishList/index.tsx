@@ -1,51 +1,46 @@
 import { FlatList, Image, Text, View } from "react-native";
 import { Header } from "../../components/header";
 import { useTheme } from "../../util/ThemeProvider";
-import type { DishItemProps } from "../../types/dish.types";
+import type { Dish, DishItemProps } from "../../types/dish.types";
 import { styles } from "./style";
 import { Star } from "lucide-react-native";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import type { RootTabParamList } from "../../routes";
 import { AddButton } from "../../components/addButton";
+import { useEffect, useState } from "react";
+import { fetchDishes } from "../../service/DishService";
+
+const DISH_PLACEHOLDER_IMAGE =
+  "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=500";
 
 type Props = BottomTabScreenProps<RootTabParamList, "Lista de Pratos">;
 
 export default function DishList({ route }: Props) {
   const { theme } = useTheme();
-  const { categoryTitle, categoryId } = route.params;
+  const { categoryTitle, categoryId, refreshKey } = route.params;
+  const [dishes, setDishes] = useState<DishItemProps[]>([]);
 
+  async function loadDishes() {
+    try {
+      setDishes([]);
+      const fetchedDishes = await fetchDishes(categoryId);
 
+      const dishItems = fetchedDishes.map((dish: Dish) => ({
+        id: dish.id,
+        title: dish.title,
+        rank: dish.rank,
+        imageURL: dish.imageURL || DISH_PLACEHOLDER_IMAGE,
+      }));
 
-  const feed = [
-    {
-      id: 1,
-      title: "Risoto de Cogumelos",
-      rank: 5,
-      imageURL:
-        "https://images.unsplash.com/photo-1476124369491-e7addf5db371?q=80&w=500",
-    },
-    {
-      id: 2,
-      title: "Lasanha à Bolonhesa",
-      rank: 4,
-      imageURL:
-        "https://images.unsplash.com/photo-1551183053-bf91a1d81141?q=80&w=500",
-    },
-    {
-      id: 3,
-      title: "Espaguete ao Pesto",
-      rank: 5,
-      imageURL:
-        "https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=500",
-    },
-    {
-      id: 4,
-      title: "Salmão Grelhado",
-      rank: 4,
-      imageURL:
-        "https://images.unsplash.com/photo-1467003909585-2f8a72700288?q=80&w=500",
-    },
-  ];
+      setDishes(dishItems);
+    } catch (error) {
+      console.error("Erro ao buscar pratos:", error);
+    }
+  }
+
+  useEffect(() => {
+    void loadDishes();
+  }, [categoryId, refreshKey]);
 
   const DishItem = ({ data }: { data: DishItemProps }) => (
     <View style={styles.containerDishItem}>
@@ -71,14 +66,19 @@ export default function DishList({ route }: Props) {
   return (
     <>
       <Header screen="dishList" title={categoryTitle || "Lista de Pratos"} />
-      <View style={{ flex: 1, backgroundColor: theme.background }}>
-        <Text style={{ color: theme.text }}> Screen</Text>
+      <View
+        style={{ flex: 1, backgroundColor: theme.background, marginTop: 20 }}
+      >
         <FlatList
-          data={feed}
+          data={dishes}
           keyExtractor={(item: DishItemProps) => String(item.id)}
           renderItem={renderItem}
         />
-        <AddButton type="dish" categoryId={categoryId} />
+        <AddButton
+          type="dish"
+          categoryId={categoryId}
+          categoryTitle={categoryTitle}
+        />
       </View>
     </>
   );

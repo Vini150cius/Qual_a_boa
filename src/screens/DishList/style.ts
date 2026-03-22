@@ -11,11 +11,10 @@ export const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   dishImage: {
-    width: 100,
     height: 100,
     borderRadius: 999,
     marginRight: 10,
-    maxWidth: "33%",
+    width: "33%",
   },
   dishTitle: {
     fontFamily: "serif",
@@ -24,7 +23,7 @@ export const styles = StyleSheet.create({
     marginBottom: 4,
     marginTop: 6,
     alignSelf: "flex-start",
-    maxWidth: "44%",
+  width: "44%",
   },
   dishRankContainer: {
     backgroundColor: "#FDF2E9",
@@ -34,7 +33,7 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     alignItems: "center",
     justifyContent: "center",
-    maxWidth: "22%",
+    width: "22%",
 
   },
   dishRankText: {

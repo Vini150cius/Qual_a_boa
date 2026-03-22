@@ -31,6 +31,7 @@ const createDatabaseSchema = async (db: SQLite.SQLiteDatabase) => {
       rank INTEGER DEFAULT 0,
       recipe TEXT,
       recipeUrl TEXT,
+      imageURL TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
     );

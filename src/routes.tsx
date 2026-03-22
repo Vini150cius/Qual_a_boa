@@ -9,8 +9,12 @@ import DishList from "./screens/DishList";
 
 export type RootTabParamList = {
   Home: undefined;
-  "Novo Prato": { categoryId: string };
-  "Lista de Pratos": { categoryId: string; categoryTitle: string };
+  "Novo Prato": { categoryId: string; categoryTitle: string };
+  "Lista de Pratos": {
+    categoryId: string;
+    categoryTitle: string;
+    refreshKey?: number;
+  };
 };
 
 const Tab = createBottomTabNavigator<RootTabParamList>();

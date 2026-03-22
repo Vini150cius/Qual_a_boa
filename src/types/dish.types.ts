@@ -10,6 +10,17 @@ export type Dish = {
   category_id: number;
   title: string;
   rank: number;
-  recipe?: string | null;    
-  recipeUrl?: string | null; 
+  recipe?: string | null;
+  recipeUrl?: string | null;
+  imageURL?: string | null;
+};
+
+export type DishRow = {
+  id: number;
+  category_id: number;
+  title: string;
+  rank: number | null;
+  recipe: string | null;
+  recipeUrl: string | null;
+  imageURL: string | null;
 };
