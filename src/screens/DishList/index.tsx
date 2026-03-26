@@ -19,11 +19,12 @@ export default function DishList({ route }: Props) {
   const { theme } = useTheme();
   const { categoryTitle, categoryId, refreshKey } = route.params;
   const [dishes, setDishes] = useState<DishItemProps[]>([]);
+  const [searchText, setSearchText] = useState("");
 
-  async function loadDishes() {
+  async function loadDishes(search: string = "") {
     try {
       setDishes([]);
-      const fetchedDishes = await fetchDishes(categoryId);
+      const fetchedDishes = await fetchDishes(categoryId, search);
 
       const dishItems = fetchedDishes.map((dish: Dish) => ({
         id: dish.id,
@@ -39,8 +40,16 @@ export default function DishList({ route }: Props) {
   }
 
   useEffect(() => {
-    void loadDishes();
-  }, [categoryId, refreshKey]);
+    void loadDishes(searchText);
+  }, [categoryId, refreshKey, searchText]);
+
+  function handleSearchChangeText(text: string) {
+    setSearchText(text);
+  }
+
+  function handleSearchSubmit(text: string) {
+    void loadDishes(text);
+  }
 
   const DishItem = ({ data }: { data: DishItemProps }) => (
     <View style={styles.containerDishItem}>
@@ -65,7 +74,13 @@ export default function DishList({ route }: Props) {
 
   return (
     <>
-      <Header screen="dishList" title={categoryTitle || "Lista de Pratos"} />
+      <Header
+        screen="dishList"
+        title={categoryTitle || "Lista de Pratos"}
+        onSearchChangeText={handleSearchChangeText}
+        onSearchSubmit={handleSearchSubmit}
+        searchPlaceholder="Buscar prato..."
+      />
       <View
         style={{ flex: 1, backgroundColor: theme.background, marginTop: 20 }}
       >
@@ -73,6 +88,11 @@ export default function DishList({ route }: Props) {
           data={dishes}
           keyExtractor={(item: DishItemProps) => String(item.id)}
           renderItem={renderItem}
+          ListEmptyComponent={
+            <Text style={{ textAlign: "center", marginTop: 20 }}>
+              Nenhum prato encontrado...
+            </Text>
+          }
         />
         <AddButton
           type="dish"

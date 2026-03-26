@@ -1,7 +1,8 @@
 import Toast from "react-native-toast-message";
 import type { Category } from "../types/category.types";
-import { getDatabase } from "./initDatabase";
+import { getDatabase, initDatabase } from "./initDatabase";
 import axios from "axios";
+import { fuzzyNameMatch } from "./searchUtils";
 
 const unsplashAccessKey = process.env.EXPO_PUBLIC_UNSPLASH_ACCESS_KEY;
 
@@ -13,7 +14,8 @@ type CategoryRow = {
   created_at: string | null;
 };
 
-export async function fetchCategories() {
+export async function fetchCategories(searchText: string = "") {
+  await initDatabase();
   const db = await getDatabase();
 
   try {
@@ -21,13 +23,17 @@ export async function fetchCategories() {
       "SELECT id, title, quantity, imageUrl, created_at FROM categories ORDER BY created_at DESC",
     );
 
-    return result.map((category) => ({
+    const mappedCategories = result.map((category) => ({
       id: String(category.id),
       title: category.title,
       quantity: category.quantity ?? 0,
       imageUrl: category.imageUrl,
       created_at: category.created_at ?? undefined,
     }));
+
+    return mappedCategories.filter((category) =>
+      fuzzyNameMatch(searchText, category.title),
+    );
   } catch (error) {
     console.error("Erro ao buscar categorias:", error);
     Toast.show({
@@ -58,6 +64,7 @@ export async function createCategory(category: Category): Promise<Category> {
     category.imageUrl ??
     "https://via.placeholder.com/150";
 
+  await initDatabase();
   const db = await getDatabase();
   try {
     const result = await db.runAsync(

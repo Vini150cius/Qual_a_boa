@@ -12,3 +12,8 @@ export type Category = {
   imageUrl?: string;
   created_at?: string;
 };
+
+export type CategoryContainerProps = {
+  categories: Category[];
+  onRefresh: () => void;
+};

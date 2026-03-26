@@ -1,12 +1,11 @@
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { CategoryItem } from "./categoryItem";
-import type { Category } from "../types/category.types";
+import type { Category, CategoryContainerProps } from "../types/category.types";
 
-type CategoryContainerProps = {
-  categories: Category[];
-};
-
-export function CategoryContainer({ categories }: CategoryContainerProps) {
+export function CategoryContainer({
+  categories,
+  onRefresh,
+}: CategoryContainerProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Explorar por categorias</Text>
@@ -16,6 +15,9 @@ export function CategoryContainer({ categories }: CategoryContainerProps) {
         numColumns={2}
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.listContent}
+        refreshing={false}
+        onRefresh={onRefresh}
+        ListEmptyComponent={<Text style={styles.emptyText}>Nenhuma categoria encontrada...</Text>}
         renderItem={({ item }) => (
           <View style={styles.itemWrapper}>
             <CategoryItem
@@ -51,5 +53,10 @@ const styles = StyleSheet.create({
   },
   itemWrapper: {
     width: "48%",
+  },
+  emptyText: {
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 20,
   },
 });

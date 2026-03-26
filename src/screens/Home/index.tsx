@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ScrollView } from "react-native";
+import { View } from "react-native";
 import { styles } from "./style";
 import { Header } from "../../components/header";
 import { useTheme } from "../../util/ThemeProvider";
@@ -13,10 +13,11 @@ import { createCategory, fetchCategories } from "../../service/CategoryService";
 export default function Home() {
   const { theme } = useTheme();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [searchText, setSearchText] = useState("");
 
-  async function loadCategories() {
+  async function loadCategories(search: string = "") {
     try {
-      const fetchedCategories = await fetchCategories();
+      const fetchedCategories = await fetchCategories(search);
       setCategories(fetchedCategories);
     } catch (error) {
       console.error("Erro ao buscar categorias:", error);
@@ -43,27 +44,43 @@ export default function Home() {
     }
 
     try {
-      const newCategory = await createCategory({
+      await createCategory({
         id: String(Date.now()),
         title: formattedName,
         quantity: 0,
       });
 
-      setCategories((previous) => [newCategory, ...previous]);
+      await loadCategories(searchText);
     } catch (error) {
       console.error("Erro ao criar categoria:", error);
     }
   }
 
+  function handleSearchChangeText(text: string) {
+    setSearchText(text);
+    void loadCategories(text);
+  }
+
+  function handleSearchSubmit(text: string) {
+    void loadCategories(text);
+  }
+
   return (
     <>
-      <Header screen="home" title="Home" />
-      <ScrollView
-        style={[styles.container, { backgroundColor: theme.background }]}
-      >
+      <Header
+        screen="home"
+        title="Home"
+        onSearchChangeText={handleSearchChangeText}
+        onSearchSubmit={handleSearchSubmit}
+        searchPlaceholder="Buscar categoria..."
+      />
+      <View style={[styles.container, { backgroundColor: theme.background }]}>
         <SortedCard />
-        <CategoryContainer categories={categories} />
-      </ScrollView>
+        <CategoryContainer
+          onRefresh={() => loadCategories(searchText)}
+          categories={categories}
+        />
+      </View>
       <AddButton type="category" onCreateCategory={handleCreateCategory} />
     </>
   );

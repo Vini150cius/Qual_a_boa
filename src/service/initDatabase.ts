@@ -2,19 +2,39 @@ import * as SQLite from "expo-sqlite";
 import Toast from "react-native-toast-message";
 
 let db: SQLite.SQLiteDatabase | null = null;
+let dbPromise: Promise<SQLite.SQLiteDatabase> | null = null;
+let schemaPromise: Promise<void> | null = null;
 
 export async function getDatabase() {
-  if (!db) {
-    db = await SQLite.openDatabaseAsync("qual_a_boa.db");
+  if (db) {
+    try {
+      await db.getFirstAsync("SELECT 1");
+      return db;
+    } catch {
+      db = null;
+    }
   }
 
-  return db;
+  if (dbPromise) {
+    return dbPromise;
+  }
+
+  dbPromise = SQLite.openDatabaseAsync("qual_a_boa.db")
+    .then((database) => {
+      db = database;
+      return database;
+    })
+    .finally(() => {
+      dbPromise = null;
+    });
+
+  return dbPromise;
 }
 
 const createDatabaseSchema = async (db: SQLite.SQLiteDatabase) => {
   // DROP TABLE IF EXISTS categories;
+  // DROP TABLE IF EXISTS dishes;
   await db.execAsync(`
-    DROP TABLE IF EXISTS dishes;
 
     CREATE TABLE IF NOT EXISTS categories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,16 +59,26 @@ const createDatabaseSchema = async (db: SQLite.SQLiteDatabase) => {
 };
 
 export async function initDatabase() {
-  try {
-    const database = await getDatabase();
-    await createDatabaseSchema(database);
-    console.log("Database initialized successfully");
-  } catch (error) {
-    console.error("Error initializing database:", error);
-    Toast.show({
-      type: "error",
-      text1: "Erro ao inicializar banco de dados",
-    });
-    throw error;
+  if (schemaPromise) {
+    return schemaPromise;
   }
+
+  schemaPromise = (async () => {
+    try {
+      const database = await getDatabase();
+      await createDatabaseSchema(database);
+    } catch (error) {
+      db = null;
+      console.error("Error initializing database:", error);
+      Toast.show({
+        type: "error",
+        text1: "Erro ao inicializar banco de dados",
+      });
+      throw error;
+    }
+  })().finally(() => {
+    schemaPromise = null;
+  });
+
+  return schemaPromise;
 }

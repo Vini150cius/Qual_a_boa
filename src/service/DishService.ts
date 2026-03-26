@@ -1,7 +1,8 @@
 import Toast from "react-native-toast-message";
 import type { Dish, DishRow } from "../types/dish.types";
-import { getDatabase } from "./initDatabase";
+import { getDatabase, initDatabase } from "./initDatabase";
 import axios from "axios";
+import { fuzzyNameMatch } from "./searchUtils";
 
 const unsplashAccessKey = process.env.EXPO_PUBLIC_UNSPLASH_ACCESS_KEY;
 
@@ -84,6 +85,7 @@ export async function createDish(dish: Dish): Promise<Dish> {
     imageURL = response.data.results[0]?.urls?.small ?? imageURL;
   }
 
+  await initDatabase();
   const db = await getDatabase();
 
   try {
@@ -99,6 +101,19 @@ export async function createDish(dish: Dish): Promise<Dish> {
       ],
     );
 
+    await db.runAsync(
+      `
+      UPDATE categories
+      SET quantity = (
+        SELECT COUNT(*)
+        FROM dishes
+        WHERE category_id = ?
+      )
+      WHERE id = ?
+      `,
+      [dish.category_id, dish.category_id],
+    );
+
     return {
       ...dish,
       id: String(result.lastInsertRowId ?? dish.id),
@@ -110,7 +125,11 @@ export async function createDish(dish: Dish): Promise<Dish> {
   }
 }
 
-export async function fetchDishes(category_id: string): Promise<Dish[]> {
+export async function fetchDishes(
+  category_id: string,
+  searchText: string = "",
+): Promise<Dish[]> {
+  await initDatabase();
   const db = await getDatabase();
   try {
     const result = await db.getAllAsync<DishRow>(
@@ -118,9 +137,7 @@ export async function fetchDishes(category_id: string): Promise<Dish[]> {
       [category_id],
     );
 
-    console.log("Pratos buscados:", result);
-
-    return result.map((dish) => ({
+    const mappedDishes = result.map((dish) => ({
       id: String(dish.id),
       category_id: dish.category_id,
       title: dish.title,
@@ -129,6 +146,10 @@ export async function fetchDishes(category_id: string): Promise<Dish[]> {
       recipeUrl: dish.recipeUrl,
       imageURL: dish.imageURL,
     }));
+
+    return mappedDishes.filter((dish) =>
+      fuzzyNameMatch(searchText, dish.title),
+    );
   } catch (error) {
     console.error("Erro ao buscar pratos:", error);
     Toast.show({
