@@ -83,3 +83,25 @@ export async function createCategory(category: Category): Promise<Category> {
     throw error;
   }
 }
+
+export async function updateCategory(
+  categoryId: string,
+  title: string,
+): Promise<void> {
+  await initDatabase();
+  const db = await getDatabase();
+
+  try {
+    await db.runAsync("UPDATE categories SET title = ? WHERE id = ?", [
+      title,
+      categoryId,
+    ]);
+  } catch (error) {
+    console.error("Erro ao atualizar categoria:", error);
+    Toast.show({
+      type: "error",
+      text1: "Erro ao atualizar categoria",
+    });
+    throw error;
+  }
+}

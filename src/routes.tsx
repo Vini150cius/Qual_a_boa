@@ -6,10 +6,15 @@ import Home from "./screens/Home";
 import NewDish from "./screens/NewDish";
 import { useTheme } from "./util/ThemeProvider";
 import DishList from "./screens/DishList";
+import type { DishItemProps } from "./types/dish.types";
 
 export type RootTabParamList = {
   Home: undefined;
-  "Novo Prato": { categoryId: string; categoryTitle: string };
+  "Novo Prato": {
+    categoryId: string;
+    categoryTitle: string;
+    dishToEdit?: DishItemProps;
+  };
   "Lista de Pratos": {
     categoryId: string;
     categoryTitle: string;

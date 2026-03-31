@@ -6,6 +6,37 @@ import { fuzzyNameMatch } from "./searchUtils";
 
 const unsplashAccessKey = process.env.EXPO_PUBLIC_UNSPLASH_ACCESS_KEY;
 
+async function resolveDishImageUrl(
+  dishTitle: string,
+  recipeUrl?: string | null,
+): Promise<string> {
+  let imageURL = "https://via.placeholder.com/150";
+
+  if (recipeUrl) {
+    const videoId = getYoutubeVideoId(recipeUrl);
+    if (videoId) {
+      return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+    }
+  }
+
+  if (!unsplashAccessKey) {
+    throw new Error(
+      "Está faltando a chave de acesso do Unsplash. Verifique as variáveis de ambiente.",
+    );
+  }
+
+  const response = await axios.get("https://api.unsplash.com/search/photos", {
+    params: {
+      client_id: unsplashAccessKey,
+      query: dishTitle,
+      per_page: 1,
+    },
+  });
+
+  imageURL = response.data.results[0]?.urls?.small ?? imageURL;
+  return imageURL;
+}
+
 function getYoutubeVideoId(url: string): string | null {
   try {
     const parsedUrl = new URL(url);
@@ -38,52 +69,7 @@ function getYoutubeVideoId(url: string): string | null {
 }
 
 export async function createDish(dish: Dish): Promise<Dish> {
-  let imageURL: string = "https://via.placeholder.com/150";
-
-  // Prioridade 1: Se tiver link do YouTube, usar thumbnail do vídeo
-  if (dish.recipeUrl) {
-    const videoId = getYoutubeVideoId(dish.recipeUrl);
-    if (videoId) {
-      imageURL = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-    } else {
-      // Prioridade 2: Buscar no Unsplash
-      if (!unsplashAccessKey) {
-        throw new Error(
-          "Está faltando a chave de acesso do Unsplash. Verifique as variáveis de ambiente.",
-        );
-      }
-
-      const response = await axios.get(
-        "https://api.unsplash.com/search/photos",
-        {
-          params: {
-            client_id: unsplashAccessKey,
-            query: dish.title,
-            per_page: 1,
-          },
-        },
-      );
-
-      imageURL = response.data.results[0]?.urls?.small ?? imageURL;
-    }
-  } else {
-    // Prioridade 2: Buscar no Unsplash
-    if (!unsplashAccessKey) {
-      throw new Error(
-        "Está faltando a chave de acesso do Unsplash. Verifique as variáveis de ambiente.",
-      );
-    }
-
-    const response = await axios.get("https://api.unsplash.com/search/photos", {
-      params: {
-        client_id: unsplashAccessKey,
-        query: dish.title,
-        per_page: 1,
-      },
-    });
-
-    imageURL = response.data.results[0]?.urls?.small ?? imageURL;
-  }
+  const imageURL = await resolveDishImageUrl(dish.title, dish.recipeUrl);
 
   await initDatabase();
   const db = await getDatabase();
@@ -121,6 +107,35 @@ export async function createDish(dish: Dish): Promise<Dish> {
     };
   } catch (error) {
     console.error("Erro ao adicionar prato:", error);
+    throw error;
+  }
+}
+
+export async function updateDish(dish: Dish): Promise<Dish> {
+  await initDatabase();
+  const db = await getDatabase();
+
+  const imageURL = await resolveDishImageUrl(dish.title, dish.recipeUrl);
+
+  try {
+    await db.runAsync(
+      "UPDATE dishes SET title = ?, rank = ?, recipe = ?, recipeUrl = ?, imageURL = ? WHERE id = ?",
+      [
+        dish.title,
+        dish.rank,
+        dish.recipe || null,
+        dish.recipeUrl || null,
+        imageURL,
+        dish.id,
+      ],
+    );
+
+    return {
+      ...dish,
+      imageURL,
+    };
+  } catch (error) {
+    console.error("Erro ao atualizar prato:", error);
     throw error;
   }
 }

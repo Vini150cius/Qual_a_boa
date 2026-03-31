@@ -5,6 +5,7 @@ import type { Category, CategoryContainerProps } from "../types/category.types";
 export function CategoryContainer({
   categories,
   onRefresh,
+  onEditCategoryTitle,
 }: CategoryContainerProps) {
   return (
     <View style={styles.container}>
@@ -17,7 +18,9 @@ export function CategoryContainer({
         contentContainerStyle={styles.listContent}
         refreshing={false}
         onRefresh={onRefresh}
-        ListEmptyComponent={<Text style={styles.emptyText}>Nenhuma categoria encontrada...</Text>}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>Nenhuma categoria encontrada...</Text>
+        }
         renderItem={({ item }) => (
           <View style={styles.itemWrapper}>
             <CategoryItem
@@ -25,6 +28,7 @@ export function CategoryContainer({
               quantity={item.quantity}
               imageUrl={item.imageUrl || "https://via.placeholder.com/150"}
               id={item.id}
+              onEditTitle={onEditCategoryTitle}
             />
           </View>
         )}

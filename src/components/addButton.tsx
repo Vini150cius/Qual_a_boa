@@ -40,6 +40,7 @@ export function AddButton({
       navigation.navigate("Novo Prato", {
         categoryId,
         categoryTitle: categoryTitle ?? "Lista de Pratos",
+        dishToEdit: undefined,
       });
     }
   }

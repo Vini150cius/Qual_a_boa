@@ -8,7 +8,11 @@ import { CategoryContainer } from "../../components/categoryContainer";
 import { AddButton } from "../../components/addButton";
 import type { Category } from "../../types/category.types";
 import { initDatabase } from "../../service/initDatabase";
-import { createCategory, fetchCategories } from "../../service/CategoryService";
+import {
+  createCategory,
+  fetchCategories,
+  updateCategory,
+} from "../../service/CategoryService";
 
 export default function Home() {
   const { theme } = useTheme();
@@ -56,6 +60,20 @@ export default function Home() {
     }
   }
 
+  async function handleEditCategoryTitle(categoryId: string, title: string) {
+    const formattedTitle = title.trim();
+    if (!formattedTitle) {
+      return;
+    }
+
+    try {
+      await updateCategory(categoryId, formattedTitle);
+      await loadCategories(searchText);
+    } catch (error) {
+      console.error("Erro ao atualizar categoria:", error);
+    }
+  }
+
   function handleSearchChangeText(text: string) {
     setSearchText(text);
     void loadCategories(text);
@@ -79,6 +97,7 @@ export default function Home() {
         <CategoryContainer
           onRefresh={() => loadCategories(searchText)}
           categories={categories}
+          onEditCategoryTitle={handleEditCategoryTitle}
         />
       </View>
       <AddButton type="category" onCreateCategory={handleCreateCategory} />

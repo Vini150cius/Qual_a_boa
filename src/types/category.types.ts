@@ -3,6 +3,7 @@ export type CategoryItemProps = {
   quantity: number;
   imageUrl: string;
   id: string;
+  onEditTitle?: (categoryId: string, title: string) => Promise<void> | void;
 };
 
 export type Category = {
@@ -16,4 +17,8 @@ export type Category = {
 export type CategoryContainerProps = {
   categories: Category[];
   onRefresh: () => void;
+  onEditCategoryTitle?: (
+    categoryId: string,
+    title: string,
+  ) => Promise<void> | void;
 };

@@ -15,7 +15,7 @@ import { Link2 } from "lucide-react-native";
 import StarRating from "react-native-star-rating-widget";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import type { RootTabParamList } from "../../routes";
-import { createDish } from "../../service/DishService";
+import { createDish, updateDish } from "../../service/DishService";
 import { useNavigation } from "@react-navigation/native";
 import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 
@@ -30,13 +30,21 @@ export default function NewDish({ route }: Props) {
     youtubeLink: 0,
     recipeNotes: 0,
   });
-  const { categoryId, categoryTitle } = route.params;
+  const { categoryId, categoryTitle, dishToEdit } = route.params;
+  const isEditMode = Boolean(dishToEdit);
 
-  const [dishName, setDishName] = useState("");
-  const [youtubeLink, setYoutubeLink] = useState("");
-  const [recipeNotes, setRecipeNotes] = useState("");
-  const [rating, setRating] = useState(0);
+  const [dishName, setDishName] = useState(dishToEdit?.title ?? "");
+  const [youtubeLink, setYoutubeLink] = useState(dishToEdit?.recipeUrl ?? "");
+  const [recipeNotes, setRecipeNotes] = useState(dishToEdit?.recipe ?? "");
+  const [rating, setRating] = useState(dishToEdit?.rank ?? 0);
   const [textRanking, setTextRanking] = useState("");
+
+  useEffect(() => {
+    setDishName(dishToEdit?.title ?? "");
+    setYoutubeLink(dishToEdit?.recipeUrl ?? "");
+    setRecipeNotes(dishToEdit?.recipe ?? "");
+    setRating(dishToEdit?.rank ?? 0);
+  }, [dishToEdit]);
 
   function setFieldPosition(
     field: "dishName" | "youtubeLink" | "recipeNotes",
@@ -74,14 +82,25 @@ export default function NewDish({ route }: Props) {
   }
 
   async function setDish() {
-    await createDish({
-      id: String(Date.now()),
-      category_id: Number(categoryId),
-      title: dishName,
-      rank: rating,
-      recipe: recipeNotes,
-      recipeUrl: youtubeLink,
-    });
+    if (isEditMode && dishToEdit) {
+      await updateDish({
+        id: dishToEdit.id,
+        category_id: Number(categoryId),
+        title: dishName,
+        rank: rating,
+        recipe: recipeNotes,
+        recipeUrl: youtubeLink,
+      });
+    } else {
+      await createDish({
+        id: String(Date.now()),
+        category_id: Number(categoryId),
+        title: dishName,
+        rank: rating,
+        recipe: recipeNotes,
+        recipeUrl: youtubeLink,
+      });
+    }
 
     setDishName("");
     setYoutubeLink("");
@@ -101,7 +120,10 @@ export default function NewDish({ route }: Props) {
 
   return (
     <>
-      <Header screen="addDish" title="Adicionar Prato" />
+      <Header
+        screen="addDish"
+        title={isEditMode ? "Editar Prato" : "Adicionar Prato"}
+      />
       <KeyboardAvoidingView
         style={[styles.screen, { backgroundColor: theme.background }]}
         behavior="height"
@@ -215,7 +237,9 @@ export default function NewDish({ route }: Props) {
         </ScrollView>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={setDish}>
-            <Text style={styles.textButton}>Salvar Prato</Text>
+            <Text style={styles.textButton}>
+              {isEditMode ? "Salvar Alterações" : "Salvar Prato"}
+            </Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

@@ -3,6 +3,8 @@ export type DishItemProps = {
   title: string;
   rank: number;
   imageURL: string;
+  recipe?: string | null;
+  recipeUrl?: string | null;
 };
 
 export type Dish = {
