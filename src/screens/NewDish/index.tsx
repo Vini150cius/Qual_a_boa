@@ -231,7 +231,15 @@ export default function NewDish({ route }: Props) {
             >
               Minha nota
             </Text>
-            <StarRating rating={rating} onChange={setRating} step="full" />
+            <View style={styles.starContainer}>
+              <StarRating
+                rating={rating}
+                onChange={setRating}
+                step="full"
+                starSize={34}
+                color="#F4C542"
+              />
+            </View>
             <Text style={styles.textRanking}> {textRanking} </Text>
           </View>
         </ScrollView>

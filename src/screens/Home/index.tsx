@@ -93,7 +93,7 @@ export default function Home() {
         searchPlaceholder="Buscar categoria..."
       />
       <View style={[styles.container, { backgroundColor: theme.background }]}>
-        <SortedCard />
+        <SortedCard categories={categories} />
         <CategoryContainer
           onRefresh={() => loadCategories(searchText)}
           categories={categories}

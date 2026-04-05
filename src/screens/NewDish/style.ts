@@ -18,7 +18,15 @@ export const styles = StyleSheet.create({
   },
   ratingGroup: {
     alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    minHeight: 240,
     marginTop: 12,
+  },
+  starContainer: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   label: {
     fontSize: 16,
@@ -59,7 +67,7 @@ export const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 16,
     fontWeight: "500",
-    color: "#00000050",
+    color: "#F4C542",
   },
   button: {
     borderRadius: 999,
