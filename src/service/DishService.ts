@@ -140,6 +140,40 @@ export async function updateDish(dish: Dish): Promise<Dish> {
   }
 }
 
+export async function deleteDish(dishId: string): Promise<void> {
+  await initDatabase();
+  const db = await getDatabase();
+
+  try {
+    const dish = await db.getFirstAsync<{ category_id: number }>(
+      "SELECT category_id FROM dishes WHERE id = ?",
+      [dishId],
+    );
+
+    if (!dish) {
+      return;
+    }
+
+    await db.runAsync("DELETE FROM dishes WHERE id = ?", [dishId]);
+
+    await db.runAsync(
+      `
+      UPDATE categories
+      SET quantity = (
+        SELECT COUNT(*)
+        FROM dishes
+        WHERE category_id = ?
+      )
+      WHERE id = ?
+      `,
+      [dish.category_id, dish.category_id],
+    );
+  } catch (error) {
+    console.error("Erro ao excluir prato:", error);
+    throw error;
+  }
+}
+
 export async function fetchDishes(
   category_id: string,
   searchText: string = "",

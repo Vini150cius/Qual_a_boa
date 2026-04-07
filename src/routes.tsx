@@ -7,9 +7,11 @@ import NewDish from "./screens/NewDish";
 import { useTheme } from "./util/ThemeProvider";
 import DishList from "./screens/DishList";
 import type { DishItemProps } from "./types/dish.types";
+import Settings from "./screens/Settings";
 
 export type RootTabParamList = {
   Home: undefined;
+  Configurações: undefined;
   "Novo Prato": {
     categoryId: string;
     categoryTitle: string;
@@ -44,6 +46,8 @@ export default function TabsNavigation() {
 
           if (route.name === "Home") {
             iconName = "home-outline";
+          } else if (route.name === "Configurações") {
+            iconName = "settings-outline";
           } else if (route.name === "Novo Prato") {
             iconName = "add-circle-outline";
           } else {
@@ -57,6 +61,11 @@ export default function TabsNavigation() {
       <Tab.Screen
         name="Home"
         component={Home}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Configurações"
+        component={Settings}
         options={{ headerShown: false }}
       />
       <Tab.Screen

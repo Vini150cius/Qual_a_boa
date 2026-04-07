@@ -84,5 +84,9 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 8,
     paddingBottom: 20,
+    gap: 10,
+  },
+  deleteButton: {
+    backgroundColor: "#DC2626",
   },
 });

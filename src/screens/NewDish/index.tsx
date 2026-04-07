@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
+  Alert,
   type LayoutChangeEvent,
   KeyboardAvoidingView,
   ScrollView,
@@ -15,7 +16,7 @@ import { Link2 } from "lucide-react-native";
 import StarRating from "react-native-star-rating-widget";
 import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import type { RootTabParamList } from "../../routes";
-import { createDish, updateDish } from "../../service/DishService";
+import { createDish, deleteDish, updateDish } from "../../service/DishService";
 import { useNavigation } from "@react-navigation/native";
 import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 
@@ -27,33 +28,33 @@ export default function NewDish({ route }: Props) {
   const scrollViewRef = useRef<ScrollView>(null);
   const fieldPositions = useRef({
     dishName: 0,
-    youtubeLink: 0,
+    recipeLink: 0,
     recipeNotes: 0,
   });
   const { categoryId, categoryTitle, dishToEdit } = route.params;
   const isEditMode = Boolean(dishToEdit);
 
   const [dishName, setDishName] = useState(dishToEdit?.title ?? "");
-  const [youtubeLink, setYoutubeLink] = useState(dishToEdit?.recipeUrl ?? "");
+  const [recipeLink, setRecipeLink] = useState(dishToEdit?.recipeUrl ?? "");
   const [recipeNotes, setRecipeNotes] = useState(dishToEdit?.recipe ?? "");
   const [rating, setRating] = useState(dishToEdit?.rank ?? 0);
   const [textRanking, setTextRanking] = useState("");
 
   useEffect(() => {
     setDishName(dishToEdit?.title ?? "");
-    setYoutubeLink(dishToEdit?.recipeUrl ?? "");
+    setRecipeLink(dishToEdit?.recipeUrl ?? "");
     setRecipeNotes(dishToEdit?.recipe ?? "");
     setRating(dishToEdit?.rank ?? 0);
   }, [dishToEdit]);
 
   function setFieldPosition(
-    field: "dishName" | "youtubeLink" | "recipeNotes",
+    field: "dishName" | "recipeLink" | "recipeNotes",
     event: LayoutChangeEvent,
   ) {
     fieldPositions.current[field] = event.nativeEvent.layout.y;
   }
 
-  function scrollToField(field: "dishName" | "youtubeLink" | "recipeNotes") {
+  function scrollToField(field: "dishName" | "recipeLink" | "recipeNotes") {
     const target = Math.max(0, fieldPositions.current[field] - 24);
     scrollViewRef.current?.scrollTo({ y: target, animated: true });
   }
@@ -89,7 +90,7 @@ export default function NewDish({ route }: Props) {
         title: dishName,
         rank: rating,
         recipe: recipeNotes,
-        recipeUrl: youtubeLink,
+        recipeUrl: recipeLink,
       });
     } else {
       await createDish({
@@ -98,12 +99,12 @@ export default function NewDish({ route }: Props) {
         title: dishName,
         rank: rating,
         recipe: recipeNotes,
-        recipeUrl: youtubeLink,
+        recipeUrl: recipeLink,
       });
     }
 
     setDishName("");
-    setYoutubeLink("");
+    setRecipeLink("");
     setRecipeNotes("");
     setRating(0);
 
@@ -112,6 +113,34 @@ export default function NewDish({ route }: Props) {
       categoryTitle,
       refreshKey: Date.now(),
     });
+  }
+
+  function handleDeleteDish() {
+    if (!dishToEdit) return;
+
+    Alert.alert(
+      "Excluir prato",
+      `Tem certeza que deseja excluir "${dishToEdit.title}"?`,
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: async () => {
+            await deleteDish(dishToEdit.id);
+
+            navigate.navigate("Lista de Pratos", {
+              categoryId,
+              categoryTitle,
+              refreshKey: Date.now(),
+            });
+          },
+        },
+      ],
+    );
   }
 
   useEffect(() => {
@@ -166,10 +195,10 @@ export default function NewDish({ route }: Props) {
 
           <View
             style={styles.fieldGroup}
-            onLayout={(event) => setFieldPosition("youtubeLink", event)}
+            onLayout={(event) => setFieldPosition("recipeLink", event)}
           >
             <Text style={[styles.label, { color: theme.text }]}>
-              Link do YouTube
+              Link da receita
             </Text>
             <View
               style={[
@@ -182,13 +211,13 @@ export default function NewDish({ route }: Props) {
             >
               <TextInput
                 style={[styles.input, { color: theme.text }]}
-                value={youtubeLink}
-                onChangeText={setYoutubeLink}
-                placeholder="https://youtube.com/..."
+                value={recipeLink}
+                onChangeText={setRecipeLink}
+                placeholder="https://exemplo.com/..."
                 placeholderTextColor={theme.placeHolder}
                 autoCapitalize="none"
                 autoCorrect={false}
-                onFocus={() => scrollToField("youtubeLink")}
+                onFocus={() => scrollToField("recipeLink")}
               />
               <View style={styles.iconContainer}>
                 <Link2 size={18} color={theme.placeHolder} />
@@ -244,6 +273,14 @@ export default function NewDish({ route }: Props) {
           </View>
         </ScrollView>
         <View style={styles.buttonContainer}>
+          {isEditMode ? (
+            <TouchableOpacity
+              style={[styles.button, styles.deleteButton]}
+              onPress={handleDeleteDish}
+            >
+              <Text style={styles.textButton}>Excluir Prato</Text>
+            </TouchableOpacity>
+          ) : null}
           <TouchableOpacity style={styles.button} onPress={setDish}>
             <Text style={styles.textButton}>
               {isEditMode ? "Salvar Alterações" : "Salvar Prato"}

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import {
   Image,
+  Linking,
   Modal,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -20,6 +22,20 @@ type Props = {
 export function DishItem({ data, onEditPress }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { theme } = useTheme();
+  const recipeUrl = data.recipeUrl?.trim();
+
+  function isValidHttpUrl(value: string) {
+    try {
+      const normalized = value.startsWith("www.") ? `https://${value}` : value;
+      const url = new URL(normalized);
+      return url.protocol === "http:" || url.protocol === "https:";
+    } catch {
+      return false;
+    }
+  }
+
+  const hasRecipeUrl = Boolean(recipeUrl);
+  const isClickableRecipeUrl = recipeUrl ? isValidHttpUrl(recipeUrl) : false;
 
   function closeModal() {
     setIsModalVisible(false);
@@ -28,6 +44,19 @@ export function DishItem({ data, onEditPress }: Props) {
   function handleEditPress() {
     closeModal();
     onEditPress?.(data);
+  }
+
+  async function handleRecipeLinkPress() {
+    if (!recipeUrl || !isClickableRecipeUrl) return;
+
+    const normalized = recipeUrl.startsWith("www.")
+      ? `https://${recipeUrl}`
+      : recipeUrl;
+
+    const supported = await Linking.canOpenURL(normalized);
+    if (supported) {
+      await Linking.openURL(normalized);
+    }
   }
 
   return (
@@ -60,32 +89,60 @@ export function DishItem({ data, onEditPress }: Props) {
         <View style={styles.overlay}>
           <Pressable style={styles.backdrop} onPress={closeModal} />
           <View style={[styles.modalCard, { backgroundColor: theme.card }]}>
-            <Text style={[styles.modalTitle, { color: theme.text }]}>
-              {data.title}
-            </Text>
+            <ScrollView
+              style={styles.modalScrollArea}
+              contentContainerStyle={styles.modalScrollContent}
+              showsVerticalScrollIndicator={false}
+            >
+              <Text style={[styles.modalTitle, { color: theme.text }]}>
+                {data.title}
+              </Text>
 
-            <Image source={{ uri: data.imageURL }} style={styles.modalImage} />
+              <Image
+                source={{ uri: data.imageURL }}
+                style={styles.modalImage}
+              />
 
-            <Text style={[styles.modalLabel, { color: theme.placeHolder }]}>
-              Nota
-            </Text>
-            <Text style={[styles.modalValue, { color: theme.text }]}>
-              {data.rank}.0
-            </Text>
+              <Text style={[styles.modalLabel, { color: theme.placeHolder }]}>
+                Nota
+              </Text>
+              <Text style={[styles.modalValue, { color: theme.text }]}>
+                {data.rank}.0
+              </Text>
 
-            <Text style={[styles.modalLabel, { color: theme.placeHolder }]}>
-              Link da receita
-            </Text>
-            <Text style={[styles.modalValue, { color: theme.text }]}>
-              {data.recipeUrl || "Não informado"}
-            </Text>
+              {hasRecipeUrl ? (
+                <>
+                  <Text
+                    style={[styles.modalLabel, { color: theme.placeHolder }]}
+                  >
+                    Link da receita
+                  </Text>
+                  {isClickableRecipeUrl ? (
+                    <Text
+                      style={[
+                        styles.modalValue,
+                        styles.modalLinkValue,
+                        { color: theme.secondary },
+                      ]}
+                      onPress={handleRecipeLinkPress}
+                    >
+                      {recipeUrl}
+                    </Text>
+                  ) : (
+                    <Text style={[styles.modalValue, { color: theme.text }]}>
+                      {recipeUrl}
+                    </Text>
+                  )}
+                </>
+              ) : null}
 
-            <Text style={[styles.modalLabel, { color: theme.placeHolder }]}>
-              Anotações
-            </Text>
-            <Text style={[styles.modalValue, { color: theme.text }]}>
-              {data.recipe || "Sem anotações"}
-            </Text>
+              <Text style={[styles.modalLabel, { color: theme.placeHolder }]}>
+                Anotações
+              </Text>
+              <Text style={[styles.modalValue, { color: theme.text }]}>
+                {data.recipe || "Sem anotações"}
+              </Text>
+            </ScrollView>
 
             <View style={styles.actions}>
               <TouchableOpacity
@@ -165,6 +222,13 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 8,
     elevation: 6,
+    maxHeight: "85%",
+  },
+  modalScrollArea: {
+    flexGrow: 0,
+  },
+  modalScrollContent: {
+    paddingBottom: 4,
   },
   modalTitle: {
     fontSize: 20,
@@ -185,6 +249,9 @@ const styles = StyleSheet.create({
   modalValue: {
     fontSize: 14,
     marginBottom: 4,
+  },
+  modalLinkValue: {
+    textDecorationLine: "underline",
   },
   actions: {
     flexDirection: "row",
