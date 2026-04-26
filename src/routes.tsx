@@ -26,8 +26,33 @@ export type RootTabParamList = {
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
+function lightenHexColor(hexColor: string, amount = 0.25) {
+  const hex = hexColor.replace("#", "");
+
+  if (hex.length !== 6) {
+    return hexColor;
+  }
+
+  const numericValue = Number.parseInt(hex, 16);
+  const red = (numericValue >> 16) & 255;
+  const green = (numericValue >> 8) & 255;
+  const blue = numericValue & 255;
+
+  const mixWithWhite = (channel: number) =>
+    Math.round(channel + (255 - channel) * amount);
+
+  const nextRed = mixWithWhite(red);
+  const nextGreen = mixWithWhite(green);
+  const nextBlue = mixWithWhite(blue);
+
+  const toHex = (value: number) => value.toString(16).padStart(2, "0");
+
+  return `#${toHex(nextRed)}${toHex(nextGreen)}${toHex(nextBlue)}`;
+}
+
 export default function TabsNavigation() {
   const { theme } = useTheme();
+  const activeTabColor = lightenHexColor(theme.secondary, 0.3);
 
   return (
     <Tab.Navigator
@@ -39,7 +64,7 @@ export default function TabsNavigation() {
           backgroundColor: theme.card,
           borderTopColor: theme.border,
         },
-        tabBarActiveTintColor: theme.secondary,
+        tabBarActiveTintColor: activeTabColor,
         tabBarInactiveTintColor: theme.placeHolder,
         tabBarIcon: ({ color, size }) => {
           let iconName: keyof typeof Ionicons.glyphMap;

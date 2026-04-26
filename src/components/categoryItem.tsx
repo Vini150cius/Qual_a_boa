@@ -50,7 +50,10 @@ export function CategoryItem({
   return (
     <>
       <TouchableOpacity
-        style={styles.item}
+        style={[
+          styles.item,
+          { backgroundColor: theme.card, borderColor: theme.border },
+        ]}
         key={id}
         onPress={() => {
           navigation.navigate("Lista de Pratos", {
@@ -80,7 +83,12 @@ export function CategoryItem({
       >
         <View style={styles.overlay}>
           <Pressable style={styles.backdrop} onPress={closeEditModal} />
-          <View style={[styles.modalCard, { backgroundColor: theme.card }]}>
+          <View
+            style={[
+              styles.modalCard,
+              { backgroundColor: theme.card, borderColor: theme.border },
+            ]}
+          >
             <Text style={[styles.modalTitle, { color: theme.text }]}>
               Editar categoria
             </Text>
@@ -103,10 +111,18 @@ export function CategoryItem({
 
             <View style={styles.actions}>
               <TouchableOpacity
-                style={[styles.actionButton, styles.cancelButton]}
+                style={[
+                  styles.actionButton,
+                  {
+                    backgroundColor: theme.background,
+                    borderColor: theme.border,
+                  },
+                ]}
                 onPress={closeEditModal}
               >
-                <Text style={styles.cancelText}>Cancelar</Text>
+                <Text style={[styles.cancelText, { color: theme.text }]}>
+                  Cancelar
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
@@ -115,7 +131,11 @@ export function CategoryItem({
                 ]}
                 onPress={handleSaveTitle}
               >
-                <Text style={styles.confirmText}>Salvar</Text>
+                <Text
+                  style={[styles.confirmText, { color: theme.onSecondary }]}
+                >
+                  Salvar
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -130,7 +150,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 150,
     borderRadius: 22,
-    backgroundColor: "#eee",
+    borderWidth: 1,
     overflow: "hidden",
   },
   image: {
@@ -169,6 +189,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 16,
     gap: 14,
+    borderWidth: 1,
     elevation: 6,
   },
   modalTitle: {
@@ -191,16 +212,12 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     paddingVertical: 10,
     paddingHorizontal: 16,
-  },
-  cancelButton: {
-    backgroundColor: "#E5E7EB",
+    borderWidth: 1,
   },
   cancelText: {
-    color: "#111827",
     fontWeight: "600",
   },
   confirmText: {
-    color: "#fff",
     fontWeight: "600",
   },
 });

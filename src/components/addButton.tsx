@@ -58,7 +58,7 @@ export function AddButton({
         style={[styles.button, { backgroundColor: theme.secondary }]}
         onPress={handleMainPress}
       >
-        <Plus size={35} color="white" />
+        <Plus size={35} color={theme.onSecondary} />
       </TouchableOpacity>
 
       <Modal
@@ -69,7 +69,12 @@ export function AddButton({
       >
         <View style={styles.overlay}>
           <Pressable style={styles.backdrop} onPress={closeModal} />
-          <View style={[styles.modalCard, { backgroundColor: theme.card }]}>
+          <View
+            style={[
+              styles.modalCard,
+              { backgroundColor: theme.card, borderColor: theme.border },
+            ]}
+          >
             <Text style={[styles.modalTitle, { color: theme.text }]}>
               Nova categoria
             </Text>
@@ -90,10 +95,18 @@ export function AddButton({
             />
             <View style={styles.actions}>
               <TouchableOpacity
-                style={[styles.actionButton, styles.cancelButton]}
+                style={[
+                  styles.actionButton,
+                  {
+                    backgroundColor: theme.background,
+                    borderColor: theme.border,
+                  },
+                ]}
                 onPress={closeModal}
               >
-                <Text style={styles.cancelText}>Cancelar</Text>
+                <Text style={[styles.cancelText, { color: theme.text }]}>
+                  Cancelar
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
@@ -102,7 +115,11 @@ export function AddButton({
                 ]}
                 onPress={handleSaveCategory}
               >
-                <Text style={styles.confirmText}>Salvar</Text>
+                <Text
+                  style={[styles.confirmText, { color: theme.onSecondary }]}
+                >
+                  Salvar
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -135,6 +152,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 16,
     gap: 14,
+    borderWidth: 1,
     elevation: 6,
   },
   modalTitle: {
@@ -157,16 +175,12 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     paddingVertical: 10,
     paddingHorizontal: 16,
-  },
-  cancelButton: {
-    backgroundColor: "#E5E7EB",
+    borderWidth: 1,
   },
   cancelText: {
-    color: "#111827",
     fontWeight: "600",
   },
   confirmText: {
-    color: "#fff",
     fontWeight: "600",
   },
 });

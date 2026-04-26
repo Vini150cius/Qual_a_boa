@@ -146,8 +146,8 @@ export function SortedCard({ categories }: Props) {
             onPress={openModal}
             disabled={!canSort}
           >
-            <Dice5 size={16} color={theme.background} />
-            <Text style={[styles.buttonText, { color: theme.background }]}>
+            <Dice5 size={16} color={theme.onSecondary} />
+            <Text style={[styles.buttonText, { color: theme.onSecondary }]}>
               Sortear Refeição
             </Text>
           </TouchableOpacity>
@@ -305,7 +305,7 @@ export function SortedCard({ categories }: Props) {
                 disabled={!canSort || isSorting}
               >
                 <Text
-                  style={[styles.sortButtonText, { color: theme.background }]}
+                  style={[styles.sortButtonText, { color: theme.onSecondary }]}
                 >
                   {isSorting ? "Sorteando..." : "Sortear agora"}
                 </Text>

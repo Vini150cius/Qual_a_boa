@@ -1,15 +1,20 @@
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { CategoryItem } from "./categoryItem";
 import type { Category, CategoryContainerProps } from "../types/category.types";
+import { useTheme } from "../util/ThemeProvider";
 
 export function CategoryContainer({
   categories,
   onRefresh,
   onEditCategoryTitle,
 }: CategoryContainerProps) {
+  const { theme } = useTheme();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Explorar por categorias</Text>
+      <Text style={[styles.title, { color: theme.text }]}>
+        Explorar por categorias
+      </Text>
       <FlatList
         data={categories}
         keyExtractor={(item) => item.id}
@@ -19,7 +24,9 @@ export function CategoryContainer({
         refreshing={false}
         onRefresh={onRefresh}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>Nenhuma categoria encontrada...</Text>
+          <Text style={[styles.emptyText, { color: theme.placeHolder }]}>
+            Nenhuma categoria encontrada...
+          </Text>
         }
         renderItem={({ item }) => (
           <View style={styles.itemWrapper}>

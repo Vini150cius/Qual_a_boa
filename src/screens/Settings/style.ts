@@ -21,6 +21,22 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
   },
+  themeOptionsRow: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  themeOptionButton: {
+    flex: 1,
+    borderRadius: 12,
+    borderWidth: 1,
+    paddingVertical: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  themeOptionButtonText: {
+    fontSize: 15,
+    fontWeight: "600",
+  },
   actionButton: {
     borderRadius: 999,
     paddingVertical: 12,
@@ -29,7 +45,6 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   actionButtonText: {
-    color: "#fff",
     fontSize: 16,
     fontWeight: "600",
   },

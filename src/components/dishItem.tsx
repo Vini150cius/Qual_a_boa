@@ -62,20 +62,26 @@ export function DishItem({ data, onEditPress }: Props) {
   return (
     <>
       <TouchableOpacity
-        style={styles.containerDishItem}
+        style={[
+          styles.containerDishItem,
+          { backgroundColor: theme.card, borderColor: theme.border },
+        ]}
         activeOpacity={0.85}
         onPress={() => setIsModalVisible(true)}
       >
         <Image source={{ uri: data.imageURL }} style={styles.dishImage} />
-        <Text style={styles.dishTitle}>{data.title}</Text>
-        <View style={styles.dishRankContainer}>
-          <Text style={styles.dishRankText}>
+        <Text style={[styles.dishTitle, { color: theme.text }]}>
+          {data.title}
+        </Text>
+        <View
+          style={[
+            styles.dishRankContainer,
+            { backgroundColor: theme.ratingBackground },
+          ]}
+        >
+          <Text style={[styles.dishRankText, { color: theme.rating }]}>
             {data.rank}.0{" "}
-            <Star
-              size={15}
-              fill={styles.dishRankText.color}
-              color={styles.dishRankText.color}
-            />{" "}
+            <Star size={15} fill={theme.rating} color={theme.rating} />{" "}
           </Text>
         </View>
       </TouchableOpacity>
@@ -88,7 +94,12 @@ export function DishItem({ data, onEditPress }: Props) {
       >
         <View style={styles.overlay}>
           <Pressable style={styles.backdrop} onPress={closeModal} />
-          <View style={[styles.modalCard, { backgroundColor: theme.card }]}>
+          <View
+            style={[
+              styles.modalCard,
+              { backgroundColor: theme.card, borderColor: theme.border },
+            ]}
+          >
             <ScrollView
               style={styles.modalScrollArea}
               contentContainerStyle={styles.modalScrollContent}
@@ -146,10 +157,18 @@ export function DishItem({ data, onEditPress }: Props) {
 
             <View style={styles.actions}>
               <TouchableOpacity
-                style={[styles.actionButton, styles.cancelButton]}
+                style={[
+                  styles.actionButton,
+                  {
+                    backgroundColor: theme.background,
+                    borderColor: theme.border,
+                  },
+                ]}
                 onPress={closeModal}
               >
-                <Text style={styles.cancelText}>Fechar</Text>
+                <Text style={[styles.cancelText, { color: theme.text }]}>
+                  Fechar
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
@@ -158,7 +177,11 @@ export function DishItem({ data, onEditPress }: Props) {
                 ]}
                 onPress={handleEditPress}
               >
-                <Text style={styles.confirmText}>Editar</Text>
+                <Text
+                  style={[styles.confirmText, { color: theme.onSecondary }]}
+                >
+                  Editar
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -176,7 +199,7 @@ const styles = StyleSheet.create({
     borderRadius: 35,
     marginBottom: 18,
     marginHorizontal: 18,
-    backgroundColor: "#fff",
+    borderWidth: 1,
   },
   dishImage: {
     height: 100,
@@ -194,7 +217,6 @@ const styles = StyleSheet.create({
     width: "44%",
   },
   dishRankContainer: {
-    backgroundColor: "#FDF2E9",
     padding: 7,
     borderRadius: 999,
     alignSelf: "center",
@@ -206,7 +228,6 @@ const styles = StyleSheet.create({
   dishRankText: {
     fontSize: 17,
     fontWeight: "600",
-    color: "#F2994A",
   },
   overlay: {
     flex: 1,
@@ -221,6 +242,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 16,
     gap: 8,
+    borderWidth: 1,
     elevation: 6,
     maxHeight: "85%",
   },
@@ -263,16 +285,12 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     paddingVertical: 10,
     paddingHorizontal: 16,
-  },
-  cancelButton: {
-    backgroundColor: "#E5E7EB",
+    borderWidth: 1,
   },
   cancelText: {
-    color: "#111827",
     fontWeight: "600",
   },
   confirmText: {
-    color: "#fff",
     fontWeight: "600",
   },
 });

@@ -67,15 +67,12 @@ export const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 16,
     fontWeight: "500",
-    color: "#F4C542",
   },
   button: {
     borderRadius: 999,
-    backgroundColor: "#FF6347",
     padding: 14,
   },
   textButton: {
-    color: "#fff",
     fontSize: 16,
     fontWeight: "600",
     textAlign: "center",
@@ -85,8 +82,5 @@ export const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 20,
     gap: 10,
-  },
-  deleteButton: {
-    backgroundColor: "#DC2626",
   },
 });

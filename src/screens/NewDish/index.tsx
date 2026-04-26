@@ -266,23 +266,31 @@ export default function NewDish({ route }: Props) {
                 onChange={setRating}
                 step="full"
                 starSize={34}
-                color="#F4C542"
+                color={theme.rating}
               />
             </View>
-            <Text style={styles.textRanking}> {textRanking} </Text>
+            <Text style={[styles.textRanking, { color: theme.rating }]}>
+              {" "}
+              {textRanking}{" "}
+            </Text>
           </View>
         </ScrollView>
         <View style={styles.buttonContainer}>
           {isEditMode ? (
             <TouchableOpacity
-              style={[styles.button, styles.deleteButton]}
+              style={[styles.button, { backgroundColor: theme.danger }]}
               onPress={handleDeleteDish}
             >
-              <Text style={styles.textButton}>Excluir Prato</Text>
+              <Text style={[styles.textButton, { color: theme.onDanger }]}>
+                Excluir Prato
+              </Text>
             </TouchableOpacity>
           ) : null}
-          <TouchableOpacity style={styles.button} onPress={setDish}>
-            <Text style={styles.textButton}>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: theme.secondary }]}
+            onPress={setDish}
+          >
+            <Text style={[styles.textButton, { color: theme.onSecondary }]}>
               {isEditMode ? "Salvar Alterações" : "Salvar Prato"}
             </Text>
           </TouchableOpacity>

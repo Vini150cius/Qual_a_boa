@@ -20,7 +20,7 @@ import {
 import { styles } from "./style";
 
 export default function Settings() {
-  const { theme } = useTheme();
+  const { theme, themeMode, setThemeMode } = useTheme();
   const [isExporting, setIsExporting] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
 
@@ -116,6 +116,69 @@ export default function Settings() {
             { backgroundColor: theme.card, borderColor: theme.border },
           ]}
         >
+          <Text style={[styles.title, { color: theme.text }]}>Tema do app</Text>
+          <Text style={[styles.description, { color: theme.placeHolder }]}>
+            Escolha entre claro e escuro. Sua preferencia fica salva no
+            dispositivo.
+          </Text>
+
+          <View style={styles.themeOptionsRow}>
+            <TouchableOpacity
+              style={[
+                styles.themeOptionButton,
+                {
+                  borderColor: theme.border,
+                  backgroundColor:
+                    themeMode === "light" ? theme.secondary : "transparent",
+                },
+              ]}
+              onPress={() => void setThemeMode("light")}
+            >
+              <Text
+                style={[
+                  styles.themeOptionButtonText,
+                  {
+                    color:
+                      themeMode === "light" ? theme.onSecondary : theme.text,
+                  },
+                ]}
+              >
+                Claro
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.themeOptionButton,
+                {
+                  borderColor: theme.border,
+                  backgroundColor:
+                    themeMode === "dark" ? theme.secondary : "transparent",
+                },
+              ]}
+              onPress={() => void setThemeMode("dark")}
+            >
+              <Text
+                style={[
+                  styles.themeOptionButtonText,
+                  {
+                    color:
+                      themeMode === "dark" ? theme.onSecondary : theme.text,
+                  },
+                ]}
+              >
+                Escuro
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View
+          style={[
+            styles.card,
+            { backgroundColor: theme.card, borderColor: theme.border },
+          ]}
+        >
           <Text style={[styles.title, { color: theme.text }]}>
             Backup de dados
           </Text>
@@ -134,9 +197,13 @@ export default function Settings() {
             disabled={isLoading}
           >
             {isExporting ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={theme.onSecondary} />
             ) : (
-              <Text style={styles.actionButtonText}>Download do backup</Text>
+              <Text
+                style={[styles.actionButtonText, { color: theme.onSecondary }]}
+              >
+                Download do backup
+              </Text>
             )}
           </TouchableOpacity>
         </View>
@@ -158,16 +225,20 @@ export default function Settings() {
           <TouchableOpacity
             style={[
               styles.actionButton,
-              { backgroundColor: "#2F855A" },
+              { backgroundColor: theme.success },
               isLoading && styles.disabledButton,
             ]}
             onPress={handleImportBackup}
             disabled={isLoading}
           >
             {isImporting ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={theme.onSuccess} />
             ) : (
-              <Text style={styles.actionButtonText}>Upload de backup</Text>
+              <Text
+                style={[styles.actionButtonText, { color: theme.onSuccess }]}
+              >
+                Upload de backup
+              </Text>
             )}
           </TouchableOpacity>
         </View>

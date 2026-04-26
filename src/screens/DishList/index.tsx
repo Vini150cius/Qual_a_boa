@@ -81,7 +81,13 @@ export default function DishList({ route, navigation }: Props) {
           keyExtractor={(item: DishItemProps) => String(item.id)}
           renderItem={renderItem}
           ListEmptyComponent={
-            <Text style={{ textAlign: "center", marginTop: 20 }}>
+            <Text
+              style={{
+                textAlign: "center",
+                marginTop: 20,
+                color: theme.placeHolder,
+              }}
+            >
               Nenhum prato encontrado...
             </Text>
           }
