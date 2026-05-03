@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "qual_a_boa",
+    "name": "Qual a boa?",
     "slug": "qual_a_boa",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icone.png",
+    "icon": "./assets/images/qual_a_boa_icone.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icone.png",
+        "foregroundImage": "./assets/images/qual_a_boa_icone.png",
         "backgroundColor": "#F3DFC1"
       },
       "edgeToEdgeEnabled": true,
